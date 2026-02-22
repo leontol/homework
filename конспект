@@ -1,0 +1,204 @@
+            #ctrl+alt+L навести красоту
+------------------------------------------------------			
+x = input(hello) # считывает строку с клавиатуры
+y = int(x)  # переводит строку х в число у 
+% - это остаток от деления
+-------------------------------------------------------
+            # ветвление если-иначе
+x = 10
+if x > 100
+    print('YES')
+else:
+    print(NO)
+# True = любое число, кроме 0
+# False = 0
+------------------------------------------------------
+# Циклы # while пока что то верно, делай
+х = 0
+while х < 10:
+    print (x)
+    x += 1
+# Циклы # for
+# range(100) - "диапазон до 100", конкретнее от 0 до 99 включительно
+for x in range(100)
+    print(x)
+-------------------------------------------------------	
+# Пример
+k = 0
+for i in range(100):
+    if i > 70:
+	k += 1
+print(k)
+-------------------------------------------------------
+# Списки, кортежи, словари
+# Пример
+a = [10, 23, 8, 17, 'hello', 'cat', 'dog', 45, [1,2,3]]
+print(a[1])
+# Пример
+a = [10, 23, 8, 17, 'hello', 'cat', 'dog', 45, [1,2,3]]
+n = 9
+for i in range(n):
+    print(a[i])
+# Пример
+a = [10, 23, 8, 17, 'hello', 'cat', 'dog', 45, [1,2,3]]
+print(len(a))
+print(len('hello'))
+# Пример
+s = 'hello'
+print(list(s))
+# Пример
+a = []
+for i in range(5)
+    a.append(18) # добавить число в массив
+	a.append(20)
+print(a)
+# Пример
+a = []
+n = int(input())
+for i in range(n)
+    a.append(int(input()))
+print(a)
+print(len(a)) # количество всех чисел
+print(sum(a)) # сумма всех чисел
+print(max(a)) # максимальное число
+print(min(a)) # мминимальное число
+# Пример
+a = (100, 200, 300) # кортеж, не меняется елемент
+a = [100, 200, 300] # массив, можно менять
+-------------------------------------------------------
+# dictionary = словарь
+# Пример
+d = dict()
+d[12] = 100
+d['hello'] = 20
+print(d)
+# Пример
+d = dict()
+for x in [12, 13, 14, 12]:
+    if x in d:
+        d[x] += 1
+	else
+	    d[x] = 1
+print(d)
+-------------------------------------------------------------
+# set - множество, это как лист, только не упорядоченная конструкция
+import random
+p = set()
+for i in range(1000000):
+p.add(random.randint(1,1000000)
+------------------------------------------------------------------
+# вложенные циклы
+# Пример
+for i in ['cat', 'dog']:
+    for x in ['fish', 'meat', 'vegetables']:
+	    print(i, x)
+# Пример
+for x in range(10):
+    for y in range(10):
+        for z in range(10):
+            print(x, y, z)
+------------------------------------------------------------------------
+# Генераторы
+a = [3 * x for x in [10, 12, 17]]
+print(a)
+------------------------------------------------------------------------
+# Функция
+# def - define - определить
+def turbo(x):
+    print(x + 7)
+    print('hello world, я турбо')
+    return x**2
+y = turbo(0)
+print(y)
+# Функция - чёрный ящик
+def turbo(a):
+    s = 0
+    for x in a:
+        s += x
+    return s
+print(sum([100, 200, 300]))
+------------------------------------------------------------------------
+# args - массив аргументов
+def f(*args):
+    return max([x for x in args if x % 2 ==0])
+print(f('args:10, 20,30))
+------------------------------------------------------------------------
+# Итераторы
+myiter = iter([12, 13, 14])
+print(myiter.__next__())
+# Пример
+myiter = iter('helloworld')
+for x in myiter:
+    print(x)
+------------------------------------------------------------------------
+# Работа с файлами
+f = open('teftel.tv.txt','r') # r = read = для чтения
+g = open('output.txt','w') # w = write = для записи
+x = int(f.readline()) # readline = метод для чтения строки из файла
+--------------------------------------------------------------------------------
+# Объектно-оиентированное программирование
+# Ключевые слова: классы, методы классов, атрибуты классов, 
+# наследование, инкапсуляция, полиморфизм
+class Animal:
+    name = 'No Name'
+    age = 0
+    fed = false
+    counte = 0
+    def __inite__(self, name, age, fed):
+        self.name = name
+        self.age = age
+        self.fed = fed
+        Animal.count += 1
+# Наследование - это когда когда классы наследуют половину атрибутов от класса старшего.
+class Animal:
+    name = 'No Name'
+    age = 0
+    fed = false
+    counte = 0
+    def __inite__(self, name, age, fed):
+        self.name = name
+        self.age = age
+        self.fed = fed
+        Animal.count += 1
+		
+class Dog(Animal):
+    def __inite__(self, name, age, fed, walks)
+	    Animal.__inite__(self, name, age, fed)
+		self.walks = walks
+
+zhucka = Dog(name:'Жучка', age: 5, fed: True, walks: 3)
+print(Animal.walks)
+
+# Пример
+class Animal:
+    name = 'No Name'
+    age = 0
+    fed = false
+    counte = 0
+    def __inite__(self, name, age, fed):
+        self.name = name
+        self.age = age
+        self.fed = fed
+        Animal.count += 1
+		
+class Dog(Animal):
+    def __inite__(self, name, age, fed, walks)
+	    Animal.__inite__(self, name, age, fed)
+		self.walks = walks
+
+zhucka = Dog(name:'Жучка', age: 5, fed: True, walks: 3)
+print(Animal.walks)
+# Полиморфизм - это одна и та же функция в разных классах по разному вычесляется.
+# Гетеры
+def get_name(self):
+    return self.name
+# Cетеры
+def set_name(self, value):
+    self.name = value
+# Магический метод принтования
+def __str__(self):
+    if self.desc != "":
+        s = f"Задача:\n{self.name}\n\nОписание:\n{self.desc}"
+    else:
+	    s = f"Задача:\n{self.name}"
+	return s
