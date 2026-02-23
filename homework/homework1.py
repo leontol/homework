@@ -204,7 +204,7 @@ def calculator():
     else:
         result = "Неизвестная операция"
     print(f"Результат: {result}")
-calculator(
+calculator()
 
 # Уровень 6.3
 import random
