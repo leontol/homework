@@ -1,0 +1,193 @@
+def calc(raw_expression):
+    # Удаляем пробелы
+    expr = raw_expression.replace(" ", "")
+
+    # Проверка на пустое выражение
+    if not expr:
+        return None
+
+    # Проверка на недопустимые символы
+    allowed_chars = set("0123456789.+-*/()")
+    for char in expr:
+        if char not in allowed_chars:
+            return None
+
+    # Проверка на отрицательное число как отдельное выражение (например, "-5")
+    # Но разрешаем числа без целой части, например ".5" или "-.5"
+    if expr.startswith("-") and len(expr) > 1:
+        # Проверяем, что после минуса только цифры и возможно одна точка
+        num_part = expr[1:]
+        # Проверка на корректное число (только цифры и максимум одна точка)
+        # При этом разрешаем случай, когда число начинается с точки (например, ".5")
+        if num_part.replace(".", "").isdigit() and num_part.count(".") <= 1:
+            # Дополнительная проверка: если число состоит только из точки - это ошибка
+            if num_part == ".":
+                return None
+            # Если это просто отрицательное число без операций - возвращаем None
+            # Но только если это не выражение с точкой в начале (например, "-.5")
+            # Такие выражения должны обрабатываться как числа с плавающей точкой
+            if num_part and num_part[0] != ".":
+                return None
+
+    values = []
+    ops = []
+    i = 0
+    len_expr = len(expr)
+    precedence = {"+": 1, "-": 1, "*": 2, "/": 2}
+
+    def apply_operator():
+        if len(values) < 2 or not ops:
+            raise ValueError
+        op = ops.pop()
+        right = values.pop()
+        left = values.pop()
+        if op == "+":
+            values.append(left + right)
+        elif op == "-":
+            values.append(left - right)
+        elif op == "*":
+            values.append(left * right)
+        elif op == "/":
+            if right == 0:
+                raise ZeroDivisionError
+            values.append(left / right)
+
+    try:
+        while i < len_expr:
+            char = expr[i]
+
+            # Парсинг чисел
+            if char.isdigit() or char == ".":
+                j = i
+                dot_count = 0
+                has_digit = False
+
+                while j < len_expr and (expr[j].isdigit() or expr[j] == "."):
+                    if expr[j].isdigit():
+                        has_digit = True
+                    if expr[j] == ".":
+                        dot_count += 1
+                        if dot_count > 1:
+                            return None
+                    j += 1
+
+                num_str = expr[i:j]
+
+                # Проверка на корректность числа
+                if not has_digit or num_str == "." or num_str == "":
+                    return None
+
+                try:
+                    num = float(num_str)
+                    values.append(num)
+                except ValueError:
+                    return None
+
+                i = j
+                continue
+
+            # Обработка скобок
+            if char == "(":
+                ops.append(char)
+                i += 1
+                continue
+
+            if char == ")":
+                # Проверка на пустые скобки
+                if i > 0 and expr[i - 1] == "(":
+                    return None
+
+                # Выполняем все операции до открывающей скобки
+                found_matching = False
+                while ops:
+                    if ops[-1] == "(":
+                        found_matching = True
+                        ops.pop()
+                        break
+                    apply_operator()
+
+                if not found_matching:
+                    return None
+
+                i += 1
+                continue
+
+            # Обработка операторов
+            if char in precedence:
+                # Проверка на некорректное использование операторов
+                if i == 0 or i == len_expr - 1:
+                    if (
+                        char != "-"
+                    ):  # Только минус может быть в начале/конце как унарный
+                        return None
+
+                # Проверка на два оператора подряд
+                if i > 0 and expr[i - 1] in precedence and expr[i - 1] != "-":
+                    return None
+
+                # Обработка унарного минуса
+                if char == "-":
+                    is_unary = (
+                        i == 0
+                        or expr[i - 1] == "("
+                        or (i > 0 and expr[i - 1] in precedence and expr[i - 1] != ")")
+                    )
+                    if is_unary:
+                        values.append(0.0)
+                        ops.append("-")
+                        i += 1
+                        continue
+
+                # Обычный бинарный оператор
+                while (
+                    ops
+                    and ops[-1] != "("
+                    and precedence.get(ops[-1], 0) >= precedence[char]
+                ):
+                    apply_operator()
+
+                ops.append(char)
+                i += 1
+                continue
+
+            # Если дошли сюда - недопустимая ситуация
+            return None
+
+        # Завершаем вычисления
+        while ops:
+            if ops[-1] == "(":
+                return None
+            apply_operator()
+
+        # Проверка результата
+        if len(values) != 1:
+            return None
+
+        result = values[0]
+
+        # Проверка на бесконечность
+        if abs(result) == float("inf"):
+            return None
+
+        # Возвращаем int для целых чисел
+        if abs(result - int(result)) < 1e-10:
+            return int(round(result))
+
+        return result
+
+    except (ValueError, IndexError, ZeroDivisionError):
+        return None
+
+
+if __name__ == "__main__":
+    expressions = [
+        "2+3",  # 5
+        "1-2*3",  # -5
+        "(1-2)*3",  # -3
+        "(1+(2/2))-(3-5)",  # 4
+        "1/2-1/2",  # 0
+    ]
+
+    for expr in expressions:
+        result = calc(expr)
+        print(f"{expr} = {result}")
